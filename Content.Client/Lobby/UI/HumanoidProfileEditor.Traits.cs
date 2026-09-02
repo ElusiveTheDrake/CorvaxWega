@@ -37,6 +37,9 @@ public sealed partial class HumanoidProfileEditor
 
         foreach (var trait in traits)
         {
+            if (trait.Species != null && Profile != null && !trait.Species.Contains(Profile.Species)) // Corvax-Wega hide traits
+                continue;
+
             if (trait.Category == null)
             {
                 defaultTraits.Add(trait.ID);
@@ -83,7 +86,13 @@ public sealed partial class HumanoidProfileEditor
                 {
                     if (preference)
                     {
-                        Profile = Profile?.WithTraitPreference(trait.ID, _prototypeManager);
+                        Profile = Profile?.WithTraitPreference(trait.ID, _prototypeManager); // Corvax-Wega-Shadekin-Start
+                        if (Profile != null)
+                        {
+                            Profile = Profile.WithCharacterAppearance(
+                                Profile.Appearance.WithEyeColor(ApplyBurnedCoreEyeClamp(Profile.Appearance.EyeColor)));
+                            _markingsModel.SetOrganEyeColor(Profile.Appearance.EyeColor);
+                        }   // Corvax-Wega-Shadekin-End
                     }
                     else
                     {

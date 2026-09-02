@@ -22,3 +22,50 @@
         layer:
         - WallLayer
         hard: false
+
+- type: entity
+  parent: BasePortal
+  id: PortalShadekinFirst
+  description: A portal linked to the shadow realm.
+  components:
+  - type: Appearance
+  - type: Portal
+    requiredCollisionTag: MobShadekin
+    closedSpriteState: anom # placeholder
+    openingSpriteState: pulse # placeholder
+    openSpriteState: anom # placeholder
+    closingSpriteState: pulse # placeholder
+    arrivalSound:
+      collection: Shadeskip
+    departureSound:
+      collection: Shadeskip
+  - type: Sprite
+    sprite: Structures/Specific/Anomalies/shadow_anom.rsi # placeholder
+    layers:
+    - state: anom # placeholder
+      map: ["enum.PortalVisualLayers.Base"]
+  - type: PointLight
+    color: Purple
+
+- type: entity
+  parent: BasePortal
+  id: PortalShadekinSecond
+  components:
+  - type: Appearance
+  - type: Portal
+    requiredCollisionTag: MobShadekin
+    closedSpriteState: anom # placeholder
+    openingSpriteState: pulse # placeholder
+    openSpriteState: anom # placeholder
+    closingSpriteState: pulse # placeholder
+    arrivalSound:
+      collection: Shadeskip
+    departureSound:
+      collection: Shadeskip
+  - type: Sprite
+    sprite: Structures/Specific/Anomalies/shadow_anom.rsi # placeholder
+    layers:
+    - state: anom # placeholder
+      map: ["enum.PortalVisualLayers.Base"]
+  - type: PointLight
+    color: Violet

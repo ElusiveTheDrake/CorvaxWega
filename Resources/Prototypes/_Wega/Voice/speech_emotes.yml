@@ -75,3 +75,34 @@
     - revved
     - газует
     - газовать
+
+- type: emote
+  id: Mar
+  name: chat-emote-name-mar
+  category: Vocal
+  available: false
+  whitelist:
+    components:
+    - Vocal
+  chatMessages: ["chat-emote-msg-shadekin-mars"] # Corvax-Localization
+  chatTriggers:
+    - Mar
+    - Mars
+    - Marna
+    - Мар
+    - Марна
+    - Мярня
+
+- type: emote
+  id: Wurble
+  name: chat-emote-name-wurble
+  category: Vocal
+  available: false
+  whitelist:
+    components:
+    - Vocal
+  chatMessages: ["chat-emote-msg-shadekin-wurble"] # Corvax-Localization
+  chatTriggers:
+    - Wurble
+    - Wurbles
+    - Журчит

@@ -1,0 +1,19 @@
+using Content.Shared.Teleportation.Components;
+using Content.Shared.Body;
+
+namespace Content.Server.Teleportation;
+
+public sealed class ShadekinCoreSystem : EntitySystem
+{
+    public override void Initialize()
+    {
+        SubscribeLocalEvent<ShadekinCoreComponent, OrganGotInsertedEvent>(OnCoreInserted);
+    }
+
+    private void OnCoreInserted(Entity<ShadekinCoreComponent> ent, ref OrganGotInsertedEvent args)
+    {
+        ent.Comp.OwnerBody ??= args.Target;
+        ent.Comp.Mode = ent.Comp.IsBurned ? ShadekinCoreMode.Inactive : ShadekinCoreMode.Active;
+        Dirty(ent);
+    }
+}

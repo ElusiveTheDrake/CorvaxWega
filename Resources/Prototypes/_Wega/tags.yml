@@ -590,13 +590,18 @@
 
 - type: Tag
   id: Tear1
-  
+
 - type: Tag
   id: Tear2
-  
+
 - type: Tag
   id: Tear3
 
 - type: Tag
   id: UpgradeKitBrain
-  
+
+- type: Tag
+  id: MobShadekin
+
+- type: Tag
+  id: Core

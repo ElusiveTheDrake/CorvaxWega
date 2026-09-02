@@ -354,15 +354,16 @@ public sealed partial class ChatSystem : SharedChatSystem
                 false,
                 session.Channel);
         }
-
-        // Also send a whisper
-        TrySendInGameICMessage(
-            source,
-            message,
-            InGameICChatType.Whisper,
-            ChatTransmitRange.Normal,
-            nameOverride: name,
-            ignoreActionBlocker: true);
+        if (channel.Whisper)
+        {
+            TrySendInGameICMessage(
+                source,
+                message,
+                InGameICChatType.Whisper,
+                ChatTransmitRange.Normal,
+                nameOverride: name,
+                ignoreActionBlocker: true);
+        }
 
         // Log to admin logs
         _adminLogger.Add(LogType.Chat, LogImpact.Low,

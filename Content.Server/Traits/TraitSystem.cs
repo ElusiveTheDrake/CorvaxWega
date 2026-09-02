@@ -43,6 +43,9 @@ public sealed partial class TraitSystem : EntitySystem
                 _whitelistSystem.IsWhitelistPass(traitPrototype.Blacklist, args.Mob))
                 continue;
 
+            if (traitPrototype.Species != null && !traitPrototype.Species.Contains(args.Profile.Species))
+                continue;
+
             // Add all components required by the prototype
             if (traitPrototype.Components.Count > 0)
                 EntityManager.AddComponents(args.Mob, traitPrototype.Components, false);

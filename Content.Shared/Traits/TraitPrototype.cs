@@ -1,6 +1,7 @@
 using Content.Shared.Roles;
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
+using Content.Shared.Humanoid.Prototypes; // Corvax-Wega
 
 namespace Content.Shared.Traits;
 
@@ -37,6 +38,16 @@ public sealed partial class TraitPrototype : IPrototype
     /// </summary>
     [DataField]
     public EntityWhitelist? Blacklist;
+
+    /// <summary>
+    /// Corvax-Wega
+    /// Don't show this trais if chosen trait whitelisted to different species
+    /// </summary>
+    [DataField]
+    public HashSet<ProtoId<SpeciesPrototype>>? Species;
+
+    [DataField]
+    public Color? ForcedEyeColor; // Corvax-Wega
 
     /// <summary>
     /// The components that get added to the player, when they pick this trait.

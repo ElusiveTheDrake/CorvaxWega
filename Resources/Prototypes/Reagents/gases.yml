@@ -48,6 +48,11 @@
         conditions:
         - !type:MetabolizerTypeCondition
           type: [ Human, Animal, Rat, Plant, Arachnid, Moth ]
+      - !type:Oxygenate # Corvax-Wega-Shadekin-Start
+        factor: 3.0
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Shadekin ]  #Corvax-Wega-Shadekin-End
       # Convert Oxygen into CO2.
       - !type:ModifyLungGas
         conditions:

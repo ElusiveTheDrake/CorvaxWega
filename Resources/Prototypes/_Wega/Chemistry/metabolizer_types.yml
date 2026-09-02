@@ -9,3 +9,7 @@
 - type: metabolizerType
   id: Ariral
   name: metabolizer-type-ariral
+
+- type: metabolizerType
+  id: Shadekin
+  name: metabolizer-type-shadekin

@@ -19,6 +19,7 @@ using Robust.Shared.ContentPack;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Direction = Robust.Shared.Maths.Direction;
+using Content.Shared.Traits; // Corvax-Wega
 
 namespace Content.Client.Lobby.UI
 {
@@ -35,6 +36,7 @@ namespace Content.Client.Lobby.UI
         private readonly MarkingManager _markingManager;
         private readonly JobRequirementsManager _requirements;
         private readonly LobbyUIController _controller;
+        private static readonly ProtoId<TraitPrototype> BurnedCoreTraitId = "BurnedCore"; // Corvax-Wega-Shadekin
 
         private readonly SpriteSystem _sprite;
 
@@ -282,8 +284,13 @@ namespace Content.Client.Lobby.UI
             {
                 if (Profile is null)
                     return;
+
+                // Corvax-Wega-Shadekin-Start
+                var clamped = ApplyBurnedCoreEyeClamp(newColor);
+                // Corvax-Wega-Shadekin-End
+
                 Profile = Profile.WithCharacterAppearance(
-                    Profile.Appearance.WithEyeColor(newColor));
+                    Profile.Appearance.WithEyeColor(clamped)); // Corvax-Wega newColor>clamped
                 _markingsModel.SetOrganEyeColor(Profile.Appearance.EyeColor);
                 ReloadProfilePreview();
             };
@@ -486,5 +493,27 @@ namespace Content.Client.Lobby.UI
         {
             SpriteView.OverrideDirection = (Direction)((int)direction % 4 * 2);
         }
+
+        private Color ApplyBurnedCoreEyeClamp(Color input) // Corwax-Wega-Shadekin-Start
+        {
+            var hsv = Color.ToHsv(input);
+
+            // BurnedCore takes priority: clamp down to forced V, bypassing the min-60 floor
+            if (Profile != null
+                && Profile.TraitPreferences.Contains(BurnedCoreTraitId)
+                && _prototypeManager.TryIndex(BurnedCoreTraitId, out var trait)
+                && trait.ForcedEyeColor is { } forced)
+            {
+                var maxV = Color.ToHsv(forced).Z;
+                hsv.Z = MathF.Min(hsv.Z, maxV);
+                return Color.FromHsv(hsv);
+            }
+
+            // Default minimum floor for Shadekin (only applies when BurnedCore isn't active)
+            if (Profile?.Species == "Shadekin")
+                hsv.Z = MathF.Max(hsv.Z, 0.6f);
+
+            return Color.FromHsv(hsv);
+        } // Corwax-Wega-Shadekin-End
     }
 }

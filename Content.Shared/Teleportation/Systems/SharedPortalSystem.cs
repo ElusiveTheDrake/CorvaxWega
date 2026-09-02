@@ -98,6 +98,8 @@ public abstract partial class SharedPortalSystem : EntitySystem
 
         if (_tag.HasTag(args.OtherEntity, PreventCollisionTag))
             return;
+        if (ent.Comp.RequiredCollisionTag != null && !_tag.HasTag(subject, ent.Comp.RequiredCollisionTag.Value))    // Corvax-Wega
+            return;
 
         // best not.
         if (Transform(subject).Anchored)
@@ -142,6 +144,7 @@ public abstract partial class SharedPortalSystem : EntitySystem
             }
 
             TeleportEntity(ent, subject, Transform(target).Coordinates, target);
+            RaiseLocalEvent(subject, new EntityTeleportedFromPortalEvent(ent)); // Corvax-Wega
             return;
         }
 
@@ -213,8 +216,8 @@ public abstract partial class SharedPortalSystem : EntitySystem
         var ourCoords = Transform(ent).Coordinates;
         var onSameMap = _transform.GetMapId(ourCoords) == _transform.GetMapId(target);
         var distanceInvalid = ent.Comp.MaxTeleportRadius != null
-                              && ourCoords.TryDistance(EntityManager, target, out var distance)
-                              && distance > ent.Comp.MaxTeleportRadius;
+            && ourCoords.TryDistance(EntityManager, target, out var distance)   // Corvax-Wega
+            && distance > ent.Comp.MaxTeleportRadius;   // Corvax-Wega
 
         // Early out if this is an invalid configuration
         if (!onSameMap && !ent.Comp.CanTeleportToOtherMaps || distanceInvalid)

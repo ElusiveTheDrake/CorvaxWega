@@ -1,5 +1,8 @@
 ﻿using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes; // Corvax-Wega
+using Content.Shared.Tag;   // Corvax-Wega
+using Robust.Shared.Serialization;  // Corvax-Wega
 
 namespace Content.Shared.Teleportation.Components;
 
@@ -53,4 +56,38 @@ public sealed partial class PortalComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
     public bool RandomTeleport = true;
+    /// <summary>
+    /// Corvax-Wega If set, only entities with this tag will be teleported by this portal.
+    /// </summary>
+    [DataField]
+    public ProtoId<TagPrototype>? RequiredCollisionTag;
+    /// <summary>
+    /// Corvax-Wega Different sprites for portal depending on state
+    /// Corvax-Wega start
+    /// </summary>
+    [DataField] public string OpeningSpriteState = "opening";
+    [DataField] public string OpenSpriteState = "open";
+    [DataField] public string ClosedSpriteState = "closed";
+    [DataField] public string ClosingSpriteState = "closing";
+    [DataField] public TimeSpan OpeningAnimationTime = TimeSpan.FromSeconds(1);
+    [DataField] public TimeSpan ClosingAnimationTime = TimeSpan.FromSeconds(1); // Corvax-Wega end
+
 }
+/// <summary>
+/// Corvax-Wega States for portals
+/// Corvax-Wega Start
+/// </summary>
+[Serializable, NetSerializable]
+public enum PortalVisuals : byte
+{
+    State
+}
+
+[Serializable, NetSerializable]
+public enum PortalVisualState : byte
+{
+    Closed,
+    Opening,
+    Open,
+    Closing
+} // Corvax-Wega End

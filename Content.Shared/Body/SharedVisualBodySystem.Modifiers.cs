@@ -184,6 +184,21 @@ public abstract partial class SharedVisualBodySystem
         var profileEvt = new ApplyOrganProfileDataEvent(profile, null);
         RaiseLocalEvent(ent, ref profileEvt);
     }
+    /// <summary>
+    /// Corvax-Wega
+    /// </summary>
+    /// <param name="ent"></param>
+    /// <param name="color"></param>
+    [PublicAPI]
+    public void SetVisualOrganColor(Entity<VisualOrganComponent> ent, Color color)
+    {
+        SetOrganColor(ent, color);
+    }
+    [PublicAPI]
+    public bool IsOrganLayer(Entity<VisualOrganComponent> ent, Enum layer) => ent.Comp.Layer.Equals(layer);
+
+    [PublicAPI]
+    public Color GetOrganColor(Entity<VisualOrganComponent> ent) => ent.Comp.Data.Color ?? Color.White;
 
     /// <summary>
     /// Applies profile data to the specified visual organs within the body.

@@ -7,3 +7,4 @@ species-name-phantom = Фантом
 species-name-harpy = Гарпия
 species-name-ariral = Арирал
 species-name-ashwalker = Пеплоходец
+species-name-shadekin = Тенекин

@@ -162,6 +162,12 @@ public abstract partial class SharedFlashSystem : EntitySystem
 
     private void OnFlashImmunityFlashAttempt(Entity<FlashImmunityComponent> ent, ref FlashAttemptEvent args)
     {
+        if (HasComp<FlashImmunityIgnoreComponent>(args.Target)) // Corvax-Wega-FlashImmunityIgnore-Start
+        {
+            args.Cancelled = false;
+            return;
+        } // Corvax-Wega-FlashImmunityIgnore-End
+
         if (TryComp<MaskComponent>(ent, out var mask) && mask.IsToggled)
             return;
 
@@ -204,6 +210,23 @@ public abstract partial class SharedFlashSystem : EntitySystem
         return true;
     }
 
+    // <summary>
+    // CorvaxWega - Make flashprotecthion partily protect from flash
+    // </summary>
+    private bool HasActiveFlashProtection(EntityUid target) // Corvax-Wega-FlashImmunityIgnoreComponent-start
+    {
+        if (TryComp<FlashImmunityComponent>(target, out var selfImmunity) && selfImmunity.Enabled)
+            return true;
+
+        var enumerator = _inventorySystem.GetSlotEnumerator(target, SlotFlags.HEAD | SlotFlags.EYES | SlotFlags.MASK);
+        while (enumerator.NextItem(out var item))
+        {
+            if (TryComp<FlashImmunityComponent>(item, out var itemImmunity) && itemImmunity.Enabled)
+                return true;
+        }
+
+        return false;
+    } // Corvax-Wega-FlashImmunityIgnoreComponent-end
     /// <summary>
     /// Cause an entity to be flashed, obstructing their vision, slowing them down and stunning them.
     /// In case of a melee attack this will do a check for revolutionary conversion.
@@ -229,6 +252,11 @@ public abstract partial class SharedFlashSystem : EntitySystem
         //CorvaxWega duration modifier for resomi
         if (TryComp<FlashModifierComponent>(target, out var flashModifier))
             flashDuration *= flashModifier.Modifier;
+
+        // Corvax-Wega-FlashImmunityIgnore-start
+        if (TryComp<FlashImmunityIgnoreComponent>(target, out var ignore) && HasActiveFlashProtection(target))
+            flashDuration *= ignore.FlashReduction;
+        // Corvax-Wega-FlashImmunityIgnore-end
 
         var attempt = new FlashAttemptEvent(target, user, used);
         RaiseLocalEvent(target, ref attempt, true);
