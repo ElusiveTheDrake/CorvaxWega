@@ -162,11 +162,13 @@ public abstract partial class SharedFlashSystem : EntitySystem
 
     private void OnFlashImmunityFlashAttempt(Entity<FlashImmunityComponent> ent, ref FlashAttemptEvent args)
     {
-        if (HasComp<FlashImmunityIgnoreComponent>(args.Target)) // Corvax-Wega-FlashImmunityIgnore-Start
+        // Corvax-Wega-FlashImmunityIgnore-Start
+        if (HasComp<FlashImmunityIgnoreComponent>(args.Target))
         {
             args.Cancelled = false;
             return;
-        } // Corvax-Wega-FlashImmunityIgnore-End
+        }
+        // Corvax-Wega-FlashImmunityIgnore-End
 
         if (TryComp<MaskComponent>(ent, out var mask) && mask.IsToggled)
             return;
@@ -210,10 +212,8 @@ public abstract partial class SharedFlashSystem : EntitySystem
         return true;
     }
 
-    // <summary>
-    // CorvaxWega - Make flashprotecthion partily protect from flash
-    // </summary>
-    private bool HasActiveFlashProtection(EntityUid target) // Corvax-Wega-FlashImmunityIgnoreComponent-start
+    // Corvax-Wega-FlashImmunityIgnoreComponent-start
+    private bool HasActiveFlashProtection(EntityUid target)
     {
         if (TryComp<FlashImmunityComponent>(target, out var selfImmunity) && selfImmunity.Enabled)
             return true;
@@ -226,7 +226,9 @@ public abstract partial class SharedFlashSystem : EntitySystem
         }
 
         return false;
-    } // Corvax-Wega-FlashImmunityIgnoreComponent-end
+    }
+    // Corvax-Wega-FlashImmunityIgnoreComponent-end
+
     /// <summary>
     /// Cause an entity to be flashed, obstructing their vision, slowing them down and stunning them.
     /// In case of a melee attack this will do a check for revolutionary conversion.

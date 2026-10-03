@@ -5,11 +5,7 @@ namespace Content.Server.Teleportation;
 
 public sealed class ShadekinCoreSystem : EntitySystem
 {
-    public override void Initialize()
-    {
-        SubscribeLocalEvent<ShadekinCoreComponent, OrganGotInsertedEvent>(OnCoreInserted);
-    }
-
+    [SubscribeLocalEvent]
     private void OnCoreInserted(Entity<ShadekinCoreComponent> ent, ref OrganGotInsertedEvent args)
     {
         ent.Comp.OwnerBody ??= args.Target;

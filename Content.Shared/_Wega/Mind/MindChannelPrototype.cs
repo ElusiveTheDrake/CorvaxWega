@@ -29,6 +29,6 @@ public sealed partial class MindChannelPrototype : IPrototype
     /// <summary>
     /// Whether sending a message on this mind channel also emits an audible whisper to nearby entities.
     /// </summary>
-    [DataField("whisper")]
+    [DataField]
     public bool Whisper { get; private set; } = true;
 }

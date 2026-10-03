@@ -43,8 +43,10 @@ public sealed partial class TraitSystem : EntitySystem
                 _whitelistSystem.IsWhitelistPass(traitPrototype.Blacklist, args.Mob))
                 continue;
 
+            // Corvax-Wega-Traits-start
             if (traitPrototype.Species != null && !traitPrototype.Species.Contains(args.Profile.Species))
                 continue;
+            // Corvax-Wega-Traits-end
 
             // Add all components required by the prototype
             if (traitPrototype.Components.Count > 0)

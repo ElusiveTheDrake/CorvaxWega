@@ -61,22 +61,18 @@ public sealed partial class PortalComponent : Component
     /// </summary>
     [DataField]
     public ProtoId<TagPrototype>? RequiredCollisionTag;
-    /// <summary>
-    /// Corvax-Wega Different sprites for portal depending on state
-    /// Corvax-Wega start
-    /// </summary>
+
+    // Corvax-Wega-Shadekin-start
     [DataField] public string OpeningSpriteState = "opening";
     [DataField] public string OpenSpriteState = "open";
     [DataField] public string ClosedSpriteState = "closed";
     [DataField] public string ClosingSpriteState = "closing";
     [DataField] public TimeSpan OpeningAnimationTime = TimeSpan.FromSeconds(1);
-    [DataField] public TimeSpan ClosingAnimationTime = TimeSpan.FromSeconds(1); // Corvax-Wega end
-
+    [DataField] public TimeSpan ClosingAnimationTime = TimeSpan.FromSeconds(1);
+    // Corvax-Wega-Shadekin-end
 }
-/// <summary>
-/// Corvax-Wega States for portals
-/// Corvax-Wega Start
-/// </summary>
+
+// Corvax-Wega-Shadekin-start
 [Serializable, NetSerializable]
 public enum PortalVisuals : byte
 {
@@ -90,4 +86,5 @@ public enum PortalVisualState : byte
     Opening,
     Open,
     Closing
-} // Corvax-Wega End
+}
+// Corvax-Wega-Shadekin-end

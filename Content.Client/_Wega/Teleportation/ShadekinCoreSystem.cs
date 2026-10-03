@@ -12,17 +12,10 @@ public sealed partial class ShadekinCoreSystem : EntitySystem
     [Dependency] private VisualBodySystem _visualBody = default!;
     [Dependency] private BodySystem _bodySystem = default!;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-        SubscribeLocalEvent<ShadekinCoreComponent, AfterAutoHandleStateEvent>(OnHandleState);
-        SubscribeLocalEvent<ShadekinCoreComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<ShadekinCoreComponent, OrganGotRemovedEvent>(OnCoreRemoved);
-        SubscribeLocalEvent<ShadekinCoreComponent, OrganGotInsertedEvent>(OnCoreInserted);
-    }
-
+    [SubscribeLocalEvent]
     private void OnStartup(Entity<ShadekinCoreComponent> ent, ref ComponentStartup args) => UpdateSprite(ent);
 
+    [SubscribeLocalEvent]
     private void OnHandleState(Entity<ShadekinCoreComponent> ent, ref AfterAutoHandleStateEvent args) => UpdateSprite(ent);
 
     private void UpdateSprite(Entity<ShadekinCoreComponent> ent)
@@ -42,11 +35,14 @@ public sealed partial class ShadekinCoreSystem : EntitySystem
         var bright = ent.Comp.Mode == ShadekinCoreMode.Active && ent.Comp.OwnerBody == body;
         UpdateEyesFor(ent, body, bright);
     }
+
+    [SubscribeLocalEvent]
     private void OnCoreRemoved(Entity<ShadekinCoreComponent> ent, ref OrganGotRemovedEvent args)
     {
-        UpdateEyesFor(ent, args.Target, bright: false); // no core in body -> always burned
+        UpdateEyesFor(ent, args.Target, false);
     }
 
+    [SubscribeLocalEvent]
     private void OnCoreInserted(Entity<ShadekinCoreComponent> ent, ref OrganGotInsertedEvent args)
     {
         var bright = ent.Comp.Mode == ShadekinCoreMode.Active && ent.Comp.OwnerBody == args.Target;
@@ -65,6 +61,7 @@ public sealed partial class ShadekinCoreSystem : EntitySystem
 
             var currentHsv = Color.ToHsv(_visualBody.GetOrganColor((eyeEnt, visualOrgan)));
             currentHsv.Z = targetV;
+
             _visualBody.SetVisualOrganColor((eyeEnt, visualOrgan), Color.FromHsv(currentHsv));
         }
     }
