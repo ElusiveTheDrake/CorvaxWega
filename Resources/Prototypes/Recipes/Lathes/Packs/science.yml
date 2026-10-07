@@ -25,8 +25,9 @@
   - DeviceDesynchronizer
   - TechDiskBag # Corvax-Wega-Add
   - TechDiskBagT3 # Corvax-Wega-Add
+  - SynthCore # Corvax-Wega-Add
   - ClothingBackpackHarmpack
-  - TeleporterChipBlank
+  - SelectorTeleporter # Corvax-Wega-Add
 
 - type: latheRecipePack
   id: ScienceClothing
@@ -86,9 +87,9 @@
   - APECircuitboard
   - ArtifactAnalyzerMachineCircuitboard
   - ArtifactCrusherMachineCircuitboard
-  - StationTeleportersControlCircuitboard
-  - StationTeleporterMachineCircuitboard
   # Corvax-wega-start
+  # - StationTeleportersControlCircuitboard
+  # - StationTeleporterMachineCircuitboard
   - BorgChargerTurboCircuitboard
   - ExosuitFabricatorHyperConvectionMachineCircuitboard
   # Corvax-wega-end

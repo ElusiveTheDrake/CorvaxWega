@@ -83,10 +83,7 @@
   cost: 15000 # 10000 Corvax-Wega-edit
   recipeUnlocks:
   - WeaponGauntletGorilla
-# Corvax-Wega-start
-  - AntiGravitySuitModule
-  - TeleporterSuitModule
-# Corvax-Wega-end
+  - OtherCoreSuitModuleNoCoreSelector # Corvax-Wega
 
 # Tier 2
 
@@ -185,6 +182,8 @@
   tier: 3
   cost: 10000
   recipeUnlocks:
-  - StationTeleportersControlCircuitboard
-  - StationTeleporterMachineCircuitboard
-  - TeleporterChipBlank
+# Corvax-Wega-Start
+  # - StationTeleportersControlCircuitboard
+  # - StationTeleporterMachineCircuitboard
+  - SelectorTeleporter # TeleporterChipBlank
+# Corvax-Wega-End

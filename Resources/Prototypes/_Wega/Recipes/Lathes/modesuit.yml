@@ -184,10 +184,10 @@
   id: WeldingSuitModule
   result: WeldingSuitModule
 
-- type: latheRecipe
-  parent: BaseModesuitModule
-  id: VisorMesonSuitModule
-  result: VisorMesonSuitModule
+# - type: latheRecipe
+  # parent: BaseModesuitModule
+  # id: VisorMesonSuitModule
+  # result: VisorMesonSuitModule
 
 - type: latheRecipe
   parent: BaseModesuitModule
@@ -214,8 +214,8 @@
 
 - type: latheRecipe
   parent: BaseGoldModesuitModule
-  id: AntiGravitySuitModule
-  result: AntiGravitySuitModule
+  id: OtherCoreSuitModuleNoCoreSelector
+  result: OtherCoreSuitModuleNoCoreSelector
 
 - type: latheRecipe
   parent: BaseGoldModesuitModule
@@ -294,11 +294,6 @@
 
 - type: latheRecipe
   parent: BaseGoldModesuitModule
-  id: TeleporterSuitModule
-  result: TeleporterSuitModule
-
-- type: latheRecipe
-  parent: BaseGoldModesuitModule
   id: ConstructorSuitModule
   result: ConstructorSuitModule
   materials:
@@ -346,6 +341,15 @@
   parent: BaseModesuitModule
   id: HolsterSuitModule
   result: HolsterSuitModule
+
+- type: latheRecipe
+  parent: BaseModesuitModule
+  id: KineticHolsterSuitModule
+  result: KineticHolsterSuitModule
+  materials:
+    Steel: 5000
+    Glass: 5000
+    Plastic: 500
 
 - type: latheRecipe
   parent: BaseGoldModesuitModule

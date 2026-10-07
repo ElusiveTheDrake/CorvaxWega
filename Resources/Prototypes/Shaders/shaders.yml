@@ -171,4 +171,29 @@
   id: NullDamage
   kind: source
   path: "/Textures/_Wega/Shaders/nulldamage.swsl"
+
+- type: shader
+  id: Postprocess
+  kind: source
+  path: "/Textures/_Wega/Shaders/postprocess.swsl"
+  params:
+    CircleRadius: 420.0
+    CircleMinDist: 0.0
+    CirclePow: 1.0
+    CircleMax: 4.0
+    CircleMult: 0.25
+    FalloffClampMin: 0.075
+    FalloffClampMax: 1.0
+    FalloffPow: 3.0
+
+- type: shader
+  id: BloodSense
+  kind: source
+  path: "/Textures/_Wega/Shaders/blood_sense.swsl"
+
+- type: shader
+  id: FeroxiNarcosis
+  kind: source
+  path: "/Textures/_Wega/Shaders/feroxi_narcosis.swsl"
+    
 # Corvax-Wega-Shaders-end

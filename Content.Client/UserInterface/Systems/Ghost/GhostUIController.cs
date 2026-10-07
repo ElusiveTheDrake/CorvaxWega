@@ -2,26 +2,19 @@ using Content.Client.Gameplay;
 using Content.Client.Ghost;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Client.UserInterface.Systems.Ghost.Widgets;
-using Content.Client.Wega.Ghost.Respawn; // Corvax-Wega-GhostRespawn
-using Content.Shared.CCVar; // Corvax-Wega-GhostRespawn
 using Content.Shared.Ghost.Components;
 using Content.Shared.Ghost.Systems;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
-using Robust.Shared.Console; // Corvax-Wega-GhostRespawn
-using Robust.Shared.Configuration; // Corvax-Wega-GhostRespawn
 
 namespace Content.Client.UserInterface.Systems.Ghost;
 
 // TODO hud refactor BEFORE MERGE fix ghost gui being too far up
-public sealed partial class GhostUIController : UIController, IOnSystemChanged<GhostSystem>, IOnSystemChanged<GhostRespawnSystem> // Corvax-Wega-GhostRespawn
+public sealed partial class GhostUIController : UIController, IOnSystemChanged<GhostSystem>
 {
     [Dependency] private IEntityNetworkManager _net = default!;
-    [Dependency] private IConfigurationManager _cfg = default!; // Corvax-Wega-GhostRespawn
-    [Dependency] private IConsoleHost _consoleHost = default!; // Corvax-Wega-GhostRespawn
 
     [UISystemDependency] private readonly GhostSystem? _system = default;
-    [UISystemDependency] private readonly GhostRespawnSystem? _respawn = default; // Corvax-Wega-GhostRespawn
 
     private GhostGui? Gui => UIManager.GetActiveUIWidgetOrNull<GhostGui>();
 
@@ -64,13 +57,6 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
         system.GhostRoleCountUpdated -= OnRoleCountUpdated;
     }
 
-    // Corvax-Wega-GhostRespawn-start
-    private void UpdateGhostRespawn(TimeSpan? timeOfDeath)
-    {
-        Gui?.UpdateGhostRespawn(timeOfDeath);
-    }
-    // Corvax-Wega-GhostRespawn-end
-
     public void UpdateGui()
     {
         if (Gui == null)
@@ -79,24 +65,17 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
         }
 
         Gui.Visible = _system?.IsGhost ?? false;
-        Gui.Update(
-            _system?.AvailableGhostRoleCount,
-            _system?.Player?.CanReturnToBody,
-            _respawn?.GhostRespawnTime, // Corvax-Wega-GhostRespawn
-            _cfg.GetCVar(WegaCVars.GhostRespawnTime) // Corvax-Wega-GhostRespawn
-        );
+        Gui.Update(_system?.AvailableGhostRoleCount, _system?.Player?.CanReturnToBody);
     }
 
     private void OnPlayerRemoved(GhostComponent component)
     {
         Gui?.Hide();
-        UpdateGhostRespawn(component.TimeOfDeath); // Corvax-Wega-GhostRespawn
     }
 
     private void OnPlayerUpdated(GhostComponent component)
     {
         UpdateGui();
-        UpdateGhostRespawn(component.TimeOfDeath); // Corvax-Wega-GhostRespawn
     }
 
     private void OnPlayerAttached(GhostComponent component)
@@ -163,7 +142,6 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
         Gui.TargetWindow.OnGhostnadoClicked += OnGhostnadoClicked;
         Gui.TargetWindow.OnWarpToRandomFollowedClicked += OnWarpToRandomFollowedClicked;
         Gui.TargetWindow.OnWarpToRandomClicked += OnWarpToRandomClicked;
-        Gui.GhostRespawnPressed += GuiOnGhostRespawnPressed; // Corvax-Wega-GhostRespawn
 
         UpdateGui();
     }
@@ -197,24 +175,4 @@ public sealed partial class GhostUIController : UIController, IOnSystemChanged<G
     {
         _system?.OpenGhostRoles();
     }
-
-    // Corvax-Wega-GhostRespawn-start
-    private void GuiOnGhostRespawnPressed()
-    {
-        _consoleHost.ExecuteCommand("ghostrespawn");
-    }
-
-    public void OnSystemLoaded(GhostRespawnSystem system)
-    {
-        system.GhostRespawn += OnGhostRespawn;
-    }
-    public void OnSystemUnloaded(GhostRespawnSystem system)
-    {
-        system.GhostRespawn -= OnGhostRespawn;
-    }
-    private void OnGhostRespawn()
-    {
-        UpdateGui();
-    }
-    // Corvax-Wega-GhostRespawn-end
 }

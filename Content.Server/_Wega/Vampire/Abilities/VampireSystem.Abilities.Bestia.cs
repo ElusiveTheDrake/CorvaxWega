@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Numerics;
-using Content.Server.Humanoid.Components;
 using Content.Server.NPC.HTN;
 using Content.Server.Polymorph.Components;
 using Content.Shared.Bed.Sleep;
@@ -16,6 +15,7 @@ using Content.Shared.Destructible;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
 using Content.Shared.Genetics;
+using Content.Shared.Humanoid;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Components;
@@ -25,7 +25,6 @@ using Content.Shared.Polymorph;
 using Content.Shared.Popups;
 using Content.Shared.Projectiles;
 using Content.Shared.SSDIndicator;
-using Content.Shared.Storage;
 using Content.Shared.Storage.Components;
 using Content.Shared.Surgery.Components;
 using Content.Shared.Vampire;
@@ -94,7 +93,7 @@ public sealed partial class VampireSystem
         var maxCritical = ent.Comp.MaxCriticalOrgans;
         var maxRegular = ent.Comp.MaxRegularOrgans;
 
-        var modifiers = new Dictionary<string, float>();
+        var modifiers = new Dictionary<ProtoId<DamageTypePrototype>, float>();
 
         var physicalMultiplier = CalculateBonusMultiplier(heartCount, maxCritical, 5f);
         if (physicalMultiplier < 1f)

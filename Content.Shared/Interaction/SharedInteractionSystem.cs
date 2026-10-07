@@ -25,7 +25,8 @@ using Content.Shared.Popups;
 using Content.Shared.Storage;
 using Content.Shared.Strip;
 using Content.Shared.Tag;
-using Content.Shared.Timing;
+using Content.Shared.Timing.Components;
+using Content.Shared.Timing.Systems;
 using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
 using Content.Shared.Wall;
@@ -166,8 +167,11 @@ namespace Content.Shared.Interaction
 
             var range = _ui.GetUiRange(ev.Target, ev.UiKey);
 
-            // As long as range>0, the UI frame updates should have auto-closed the UI if it is out of range.
-            DebugTools.Assert(range <= 0 || UiRangeCheck(ev.Actor, ev.Target, range));
+            if (range > 0 && !UiRangeCheck(ev.Actor, ev.Target, range))
+            {
+                ev.Cancel();
+                return;
+            }
 
             if (range <= 0 && !IsAccessible(ev.Actor, ev.Target))
             {
@@ -214,8 +218,19 @@ namespace Content.Shared.Interaction
         {
             // don't prevent the server state for the container from being applied to the client correctly
             // otherwise this will cause an error if the client predicts adding UnremoveableComponent
-            if (!_gameTiming.ApplyingState)
-                args.Cancel();
+            // Corvax-Wega-UnremoveableOnlyInSlots-start
+            if (_gameTiming.ApplyingState)
+                return;
+
+            // Block only removal from a matching inventory slot
+            if (item.OnlyInSlots != SlotFlags.NONE &&
+                !(_inventory.TryGetSlot(args.Container.Owner, args.Container.ID, out var slot) &&
+                  (slot.SlotFlags & item.OnlyInSlots) != 0))
+            {
+                return;
+            }
+            // Corvax-Wega-UnremoveableOnlyInSlots-end
+            args.Cancel();
         }
 
         /// <summary>
@@ -227,6 +242,12 @@ namespace Content.Shared.Interaction
             if (_gameTiming.ApplyingState)
                 return; // The changes are already networked with the same gamestate as the container event.
 
+            // Corvax-Wega-UnremoveableOnlyInSlots-start
+            // Removed from a slot where it was not locked, so nothing to do
+            if (item.OnlyInSlots != SlotFlags.NONE && (args.SlotFlags & item.OnlyInSlots) == 0)
+                return;
+            // Corvax-Wega-UnremoveableOnlyInSlots-end
+
             if (!item.DeleteOnDrop)
                 RemCompDeferred<UnremoveableComponent>(uid);
             else
@@ -237,6 +258,12 @@ namespace Content.Shared.Interaction
         {
             if (_gameTiming.ApplyingState)
                 return; // The changes are already networked with the same gamestate as the container event.
+
+            // Corvax-Wega-UnremoveableOnlyInSlots-start
+            // Slot-restricted items are not locked in hands
+            if (item.OnlyInSlots != SlotFlags.NONE)
+                return;
+            // Corvax-Wega-UnremoveableOnlyInSlots-end
 
             if (!item.DeleteOnDrop)
                 RemCompDeferred<UnremoveableComponent>(uid);
@@ -250,6 +277,12 @@ namespace Content.Shared.Interaction
                 return; // The changes are already networked with the same gamestate as the container event.
             // Other than the two cases above this is not a container event, but adding and removing hands is networked similarly
             // and removing hands causes items to be dropped.
+
+            // Corvax-Wega-UnremoveableOnlyInSlots-start
+            // Slot-restricted items are not locked in hands
+            if (item.OnlyInSlots != SlotFlags.NONE)
+                return;
+            // Corvax-Wega-UnremoveableOnlyInSlots-end
 
             if (!item.DeleteOnDrop)
                 RemCompDeferred<UnremoveableComponent>(uid);
@@ -1181,7 +1214,7 @@ namespace Content.Shared.Interaction
                     _adminLogger.Add(LogType.InteractActivate, LogImpact.Low, $"{ToPrettyString(user):user} activated {ToPrettyString(used):used}");
 
                 if (delayComponent != null)
-                    _useDelay.TryResetDelay(used, component: delayComponent);
+                    _useDelay.TryResetDelay((used, delayComponent));
                 return true;
             }
 
@@ -1194,7 +1227,7 @@ namespace Content.Shared.Interaction
             DoContactInteraction(user, used);
             // Still need to call this even without checkUseDelay in case this gets relayed from Activate.
             if (delayComponent != null)
-                _useDelay.TryResetDelay(used, component: delayComponent);
+                _useDelay.TryResetDelay((used, delayComponent));
 
             _adminLogger.Add(LogType.InteractActivate, LogImpact.Low, $"{ToPrettyString(user):user} activated {ToPrettyString(used):used}");
             return true;
