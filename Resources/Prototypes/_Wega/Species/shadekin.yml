@@ -3,9 +3,7 @@
   name: species-name-shadekin
   roundStart: true
   prototype: MobShadekin
-  sprites: MobShadekinSprites
   defaultSkinTone: "#FFFFFF"
-  markingLimits: MobShadekinMarkingLimits
   dollPrototype: AppearanceShadekin
   skinColoration: Hues
   naming: First

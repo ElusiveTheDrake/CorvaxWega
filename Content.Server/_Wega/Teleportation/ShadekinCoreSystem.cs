@@ -3,7 +3,7 @@ using Content.Shared.Body;
 
 namespace Content.Server.Teleportation;
 
-public sealed class ShadekinCoreSystem : EntitySystem
+public sealed partial class ShadekinCoreSystem : EntitySystem
 {
     [SubscribeLocalEvent]
     private void OnCoreInserted(Entity<ShadekinCoreComponent> ent, ref OrganGotInsertedEvent args)
