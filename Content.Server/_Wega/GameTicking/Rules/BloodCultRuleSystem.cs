@@ -529,6 +529,7 @@ namespace Content.Server.GameTicking.Rules
                 _visualBody.ApplyProfiles(cultist, updatedProfiles);
             }
         }
+
         private void OnCultistEyesRemove(EntityUid uid, BloodCultistEyesComponent comp, ComponentRemove args)
         {
             if (comp.OriginalEyeColor == null)
@@ -550,6 +551,7 @@ namespace Content.Server.GameTicking.Rules
                     Dirty(coreUid, core);
             }
         }
+
         private int GetCultEntities()
         {
             var totalCultists = GetAllCultists().Count;

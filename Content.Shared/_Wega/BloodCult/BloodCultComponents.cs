@@ -194,5 +194,6 @@ public sealed partial class BloodCultistEyesComponent : Component
     [DataField]
     public Color? OriginalEyeColor;
 }
+
 [RegisterComponent, NetworkedComponent]
 public sealed partial class BloodPentagramDisplayComponent : Component;
