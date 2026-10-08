@@ -33,6 +33,7 @@ using Content.Shared.Popups;
 using Content.Shared.Zombies;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Surgery.Components;
+using Content.Shared.Teleportation.Components;
 using Content.Shared.Mind.Components;
 using Content.Shared.RoundEnd;
 using Content.Shared.StatusEffectNew;
@@ -87,6 +88,7 @@ namespace Content.Server.GameTicking.Rules
 
             SubscribeLocalEvent<AutoCultistComponent, ComponentStartup>(OnAutoCultistAdded);
             SubscribeLocalEvent<BloodCultistComponent, ComponentRemove>(OnComponentRemove);
+            SubscribeLocalEvent<BloodCultistEyesComponent, ComponentRemove>(OnCultistEyesRemove);
             SubscribeLocalEvent<BloodCultistComponent, MobStateChangedEvent>(OnMobStateChanged);
             SubscribeLocalEvent<BloodCultistComponent, EntityZombifiedEvent>(OnCultistZombified);
         }
@@ -287,6 +289,14 @@ namespace Content.Server.GameTicking.Rules
             foreach (var actionPrototype in actionPrototypes)
                 _action.AddAction(ent, actionPrototype);
 
+            var cultistComp = EnsureComp<BloodCultistComponent>(ent);
+            var mindLink = EnsureComp<MindLinkComponent>(ent);
+            if (!mindLink.Channels.Contains(cultistComp.CultMindChannel))
+            {
+                mindLink.Channels.Add(cultistComp.CultMindChannel);
+                Dirty(ent, mindLink);
+            }
+
             var componentsToRemove = new[]
             {
                 typeof(PacifiedComponent)
@@ -396,9 +406,6 @@ namespace Content.Server.GameTicking.Rules
                 _antag.SendBriefing(session, MakeBriefing(uid), Color.Red, new SoundPathSpecifier("/Audio/_Wega/Ambience/Antag/bloodcult_start.ogg"));
             RemComp<AutoCultistComponent>(uid);
 
-            var mindLink = EnsureComp<MindLinkComponent>(uid);
-            mindLink.Channels.Add(culsistComp.CultMindChannel);
-
             MakeCultist(uid);
             var query = QueryActiveRules();
             while (query.MoveNext(out _, out var cult, out _, out _))
@@ -462,11 +469,9 @@ namespace Content.Server.GameTicking.Rules
             {
                 foreach (var cultist in GetAllCultists())
                 {
-                    if (!HasComp<BloodCultistEyesComponent>(cultist))
-                    {
+                    EnsureComp<BloodCultistEyesComponent>(cultist);
+                    if (TryComp<BloodCultistEyesComponent>(cultist, out var eyes) && eyes.OriginalEyeColor == null)
                         UpdateCultistEyes(cultist);
-                        AddComp<BloodCultistEyesComponent>(cultist);
-                    }
                 }
 
                 if (!cult.FirstTriggered)
@@ -514,6 +519,9 @@ namespace Content.Server.GameTicking.Rules
             {
                 var cultistEyeColor = Color.FromHex("#E22218FF");
 
+                var eyes = EnsureComp<BloodCultistEyesComponent>(cultist);
+                eyes.OriginalEyeColor ??= profiles.Values.First().EyeColor;
+
                 var updatedProfiles = profiles.ToDictionary(
                     pair => pair.Key,
                     pair => pair.Value with { EyeColor = cultistEyeColor });
@@ -521,7 +529,27 @@ namespace Content.Server.GameTicking.Rules
                 _visualBody.ApplyProfiles(cultist, updatedProfiles);
             }
         }
+        private void OnCultistEyesRemove(EntityUid uid, BloodCultistEyesComponent comp, ComponentRemove args)
+        {
+            if (comp.OriginalEyeColor == null)
+                return;
 
+            if (!_visualBody.TryGatherMarkingsData(uid, null, out var profiles, out _, out _))
+                return;
+
+            var updatedProfiles = profiles.ToDictionary(
+                pair => pair.Key,
+                pair => pair.Value with { EyeColor = comp.OriginalEyeColor.Value });
+
+            _visualBody.ApplyProfiles(uid, updatedProfiles);
+
+            var coreQuery = EntityQueryEnumerator<ShadekinCoreComponent>();
+            while (coreQuery.MoveNext(out var coreUid, out var core))
+            {
+                if (core.OwnerBody == uid)
+                    Dirty(coreUid, core);
+            }
+        }
         private int GetCultEntities()
         {
             var totalCultists = GetAllCultists().Count;

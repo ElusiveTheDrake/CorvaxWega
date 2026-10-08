@@ -104,6 +104,14 @@ namespace Content.Server.GameTicking.Rules
             foreach (var actionPrototype in actionPrototypes)
                 _action.AddAction(ent, actionPrototype);
 
+            var cultistComp = EnsureComp<VeilCultistComponent>(ent);
+            var mindLink = EnsureComp<MindLinkComponent>(ent);
+            if (!mindLink.Channels.Contains(cultistComp.CultMindChannel))
+            {
+                mindLink.Channels.Add(cultistComp.CultMindChannel);
+                Dirty(ent, mindLink);
+            }
+
             var componentsToRemove = new[]
             {
                 typeof(PacifiedComponent)
@@ -218,9 +226,6 @@ namespace Content.Server.GameTicking.Rules
             if (mind is { UserId: not null } && _player.TryGetSessionById(mind.UserId, out var session))
                 _antag.SendBriefing(session, MakeBriefing(uid), Color.Orange, new SoundPathSpecifier("/Audio/_Wega/Ambience/Antag/veilcult_start.ogg"));
             RemComp<AutoVeilCultistComponent>(uid);
-
-            var mindLink = EnsureComp<MindLinkComponent>(uid);
-            mindLink.Channels.Add(culsistComp.CultMindChannel);
 
             var ritualObjective = _objectives.TryCreateObjective(mindId, mind, "VeilCultRitualObjective");
             if (ritualObjective != null) _mind.AddObjective(mindId, mind, ritualObjective.Value);

@@ -508,7 +508,6 @@ namespace Content.Client.Lobby.UI
 
             var hsv = Color.ToHsv(input);
 
-            // Traits with ForcedEyeColor (e.g. BurnedCore): cap brightness at the forced color's V
             foreach (var traitId in Profile.TraitPreferences)
             {
                 if (_prototypeManager.TryIndex<TraitPrototype>(traitId, out var trait)
@@ -519,7 +518,6 @@ namespace Content.Client.Lobby.UI
                 }
             }
 
-            // Normal shadekin: brightness floor
             hsv.Z = MathF.Max(hsv.Z, 0.6f);
             return Color.FromHsv(hsv);
         }

@@ -151,8 +151,8 @@
       - ReagentId: ShadekinBlood
         Quantity: 600
   - type: TemperatureDamage
-    heatDamageThreshold: 330
-    coldDamageThreshold: 195
+    heatDamageThreshold: 314
+    coldDamageThreshold: 230
     coldDamage:
       types:
         Cold : 0.05 #per second, scales with temperature & other constants
